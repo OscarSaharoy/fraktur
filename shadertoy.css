@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    passing: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body, html {
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+}
+
+#c {
+    /*width: 100vw;*/
+    /*height: 100vh;*/
+    width: 88vw;
+    height: calc(100vh - 12vw);
+    margin: 6vw;
+    grid-column: 1;
+    grid-row: 1;
+    touch-action: none;
+}
