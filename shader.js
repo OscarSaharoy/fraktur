@@ -40,35 +40,50 @@ float V( vec2 z, int n ) {
 
 float x( vec2 z, int n, float K ) {
 
-	return log( V(z, n) ) / K;
+	return ( log( log( length(z) ) ) - float(n)*log( 2.0 ) ) / K;
+}
+
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
 vec3 g( float x ) {
 
-	// if( x == 1.0 ) return vec3(1);
+	if( x == 1.0 ) return vec3(1);
 
-	// return vec3( cos(6.28*x) );
+	float s = 0.3; // 0.3 + cos( 0.2*x )*0.3;
+	float v = 1.2; // + cos( 0.2*x )*0.3;
+	// float m = 1.2 + cos(0.2*x) * 0.2;
 
-	float ca = 1.0                         * 1.0 / log(2.0);
-	float cb = 1.0 / (3.0*pow(2.0,   0.5)) * 1.0 / log(2.0);
-	float cc = 1.0 / (7.0*pow(3.0, 0.125)) * 1.0 / log(2.0);
+	// float t = 0.8 + 0.2 * sin( x * 0.2 );
 
-	float r = ( 1.0 - cos( ca*x ) ) / 2.0;
-	float g = ( 1.0 - cos( cb*x ) ) / 2.0;
-	float b = ( 1.0 - cos( cc*x ) ) / 2.0;
+	// return vec3(1) * (1.0-t) + vec3(0.5, 1.0, 1.0) * t;
 
-	return vec3( r, g, b );
+	return hsv2rgb( vec3(0.5, s, v) );
+}
+
+
+float saturate( float x ) {
+	return clamp(x, 0.0, 1.0);
+}
+
+
+vec3 saturate( vec3 x ) {
+	return clamp(x, 0.0, 1.0);
 }
 
 
 float stripeFunc( vec2 z ) {
 
 	vec3 norm = normalize( z.xyy );
-	return 0.2 + 0.8 * length(cross(norm, vec3(1.0,0.0,0.0))); //sin( atan( norm.y, norm.x ) );
+	return length(cross(norm, vec3(1.0, 0.0, 0.0))); //sin( atan( norm.y, norm.x ) );
 }
 
 
-float mandelbrot( vec2 c ) {
+vec3 mandelbrot( vec2 c ) {
 
 	const int iterations = 300;
 	const float R = 10000.0;
@@ -77,8 +92,9 @@ float mandelbrot( vec2 c ) {
 	vec2 der = vec2(1.0, 0.0);
 	float angle = stripeFunc(z);
 	float lastAngle = angle;
+	int i;
 
-	for( int i=0; i<iterations; ++i ) {
+	for( i=0; i<iterations; ++i ) {
 
 		der = c_mul(der*2.0, z);
 		z   = c_sqr(z) + c;
@@ -91,22 +107,25 @@ float mandelbrot( vec2 c ) {
 			break;
 
 		if( length(der) < 1e-5 )
-      		return 1.0;
+      		return vec3(1.0);
  	}
 
  	if( length(z) < R )
- 		return 1.0;
+ 		return vec3(1.0);
 
- 	// return 0.0;
-
- 	vec2 u = normalize( c_div( z, der ) );
-    float light = dot( u, vec2(1,1) ) * 0.2 + 0.6;
 
     float frac = 1.0 + log2( log(R) / log(length(z)) );
     float smoothedAngle = angle * frac + lastAngle * (1.0 - frac);
-    // return smoothedAngle;
+    // smoothedAngle = 0.5 + (smoothedAngle-0.5) * (1.0 + 0.0*float(i) / float(iterations));
 
-	return (light + smoothedAngle) / 2.0;
+    // return vec3(smoothedAngle);
+
+ 	vec2 u = normalize( c_div( z, der ) );
+    float light = dot( u, vec2(0.71,0.71) ) * 0.25 + 0.8;
+
+    vec3 colour = g( x( z, i, 1.0 ) );
+
+	return colour * light * smoothedAngle;
 }
 
 
@@ -116,7 +135,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
     float aspect = iResolution.x / iResolution.y;
     vec2 uv = ( fragCoord / iResolution.x - vec2( 0.5, 0.5 / aspect ) ) * zoom + offset;
     
-    vec3 colour = vec3( mandelbrot(uv) );
+    vec3 colour = mandelbrot(uv);
     fragColor = vec4( colour, moved ? 1.0 : 0.05 );
 }
 
