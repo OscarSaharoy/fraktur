@@ -6,18 +6,30 @@
 
 <head>
     <meta charset="utf-8">
-    <title>fraktur</title>
+    <title> fraktur </title>
     <link href="shadertoy.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-    <canvas id="c"> </canvas>
+    <div id="container">
+        <canvas id="c"> </canvas>
+        <!-- <div id="crosshair"> <div id="crosshair-box"></div> </div> -->
+        <svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg"> <path id="orbit" d=""/> </svg>
+        <p id="title"> fraktur </p> 
+        <p id="text">  </p> 
+    </div>
+
     <script src="https://threejs.org/build/three.min.js"></script>
-    <script type="text/javascript" src="shader.js"> </script>
-    <script type="text/javascript" src="shadertoy.js"> </script>
-    <script type="text/javascript" src="canvas-control.js"> </script>
+    <script type="text/javascript" src="js/v3.js"> </script>
+    <script type="text/javascript" src="js/shader.js"> </script>
+    <script type="text/javascript" src="js/shadertoy.js"> </script>
+    <script type="text/javascript" src="js/orbit.js"> </script>
+    <script type="text/javascript" src="js/canvas-control.js"> </script>
 
 </body>
 
