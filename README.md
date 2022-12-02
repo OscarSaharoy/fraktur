@@ -2,6 +2,6 @@
 
 threejs mandelbrot viewer
 
-## [CodePen Link](https://codepen.io/oscarsaharoy/full/WNEjeBw)
+## [Try it out](https://codepen.io/oscarsaharoy/full/WNEjeBw)
 
 ![screenshot](https://github.com/OscarSaharoy/fraktur/blob/main/screenshot.jpg)
